@@ -148,22 +148,37 @@ if (-not ("WinInet.NativeMethods" -as [type])) {
 ##################################################
 # VALIDAÇÃO FINAL
 #
-	Start-Sleep -Milliseconds 800
+
+$tentativas = 5
+$intervaloMs = 500
+$sucesso = $false
+
+for ($i = 0; $i -lt $tentativas; $i++) {
+
+	Start-Sleep -Milliseconds $intervaloMs
 
 	$new = Get-ItemProperty -Path $regPath -Name ProxyEnable
 
-	if ($new.ProxyEnable -eq $current.ProxyEnable) {
-
-		Show-TempMessage "A alteração NÃO foi aplicada.`nPossível bloqueio por política (GPO)." 5
-		exit
-
-	} else {
-
-		if ($new.ProxyEnable -eq 1) {
-			Show-TempMessage "Proxy ATIVADO com sucesso.`nA navegação pode levar alguns segundos para refletir a mudança." 3
-		} else {
-			Show-TempMessage "Proxy DESATIVADO com sucesso." 3
-		}
+	if ($new.ProxyEnable -ne $current.ProxyEnable) {
+		$sucesso = $true
+		break
 	}
+}
+
+if (-not $sucesso) {
+
+	Show-TempMessage "A alteração NÃO foi aplicada.`nPossível atraso do sistema ou restrição local." 5
+	exit
+
+} else {
+
+	if ($new.ProxyEnable -eq 1) {
+		Show-TempMessage "Proxy ATIVADO com sucesso.`nA navegação pode levar alguns segundos para refletir a mudança." 3
+	} else {
+		Show-TempMessage "Proxy DESATIVADO com sucesso." 3
+	}
+}
+
+
 
 

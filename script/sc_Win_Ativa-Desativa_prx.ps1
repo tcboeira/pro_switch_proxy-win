@@ -116,7 +116,7 @@ if (-not ("WinInet.NativeMethods" -as [type])) {
 
 		# Define configurações do proxy
 		$proxyAddress = "http://proxy.estado.intra.rs.gov.br:3128"
-		$proxyBypass = "*.local;localhost;127.0.0.1;<local>;*.intra.rs.gov.br"
+		$proxyBypass = "*intranet.*;*.local;*.soe.rs.gov.br;*.sefa.gpdb.producao.sefaz.rs.gov.br;*.hml.rs.gov.br;*.intra.rs.gov.br;*.reders;*.rede.rs;*intranet.*;*.dmz.procergs;*.procergs;*.procergs.com.br;*.banrisul.com.br;10.124.*;10.125.*;10.126.*;10.127.*;172.16.*;192.168.*;200.198.128.*;200.233.*;200.198.169.*;200.189.134.*;172.28.*;*.procergs.rs.gov.br;*.hml.cloud;*.compras.rs.gov.br;*.pregaobanrisul.com.br"
 
 		if ($current.ProxyEnable -eq 1) {
 

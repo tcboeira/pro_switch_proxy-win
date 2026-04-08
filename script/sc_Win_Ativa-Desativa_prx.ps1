@@ -1,9 +1,9 @@
 <#
 	Nome: sc_Win_Ativa-Desativa_prx.ps1
 	Data: 22/09/2025 - 8h41
-	Ultima Revisão: 08/04/2026 - 9h50
+	Ultima Revisão: 08/04/2026 - 14h20
 	
-	Versão: 3.0
+	Versão: 3.1
 	Criado: Thiago Boeira
 			tcboeira@gmail.com
 		
@@ -16,6 +16,8 @@
 	#
 	Versão // Data - Hora // Alteração-Descrição
 
+	3.1 // 08/04/2026 - 14h20 // - Insere o endereço de Proxy e exceções (se houver) automaticamente
+	
 	3.0 // 08/04/2026 - 9h50 // - Incrementado com exibição de janelas poup-up, para uma experiencia mais amigavel
 								- Excluido trecho 1.0 obsoletado destacado/comentado após o Script
 
@@ -101,12 +103,33 @@ if (-not ("WinInet.NativeMethods" -as [type])) {
 	try {
 		$current = Get-ItemProperty -Path $regPath -Name ProxyEnable -ErrorAction Stop
 
+		<#
 		if ($current.ProxyEnable -eq 1) {
 
 			Set-ItemProperty -Path $regPath -Name ProxyEnable -Value 0 -ErrorAction Stop
 
 		} else {
 
+			Set-ItemProperty -Path $regPath -Name ProxyEnable -Value 1 -ErrorAction Stop
+		}
+		#>
+
+		# Define configurações do proxy
+		$proxyAddress = "http://proxy.estado.intra.rs.gov.br:3128"
+		$proxyBypass = "*.local;localhost;127.0.0.1;<local>;*.intra.rs.gov.br"
+
+		if ($current.ProxyEnable -eq 1) {
+
+			# DESABILITAR
+			Set-ItemProperty -Path $regPath -Name ProxyEnable -Value 0 -ErrorAction Stop
+
+		} else {
+
+			# CONFIGURA proxy antes de habilitar
+			Set-ItemProperty -Path $regPath -Name ProxyServer -Value $proxyAddress -ErrorAction Stop
+			Set-ItemProperty -Path $regPath -Name ProxyOverride -Value $proxyBypass -ErrorAction Stop
+
+			# HABILITA
 			Set-ItemProperty -Path $regPath -Name ProxyEnable -Value 1 -ErrorAction Stop
 		}
 
@@ -144,7 +167,3 @@ if (-not ("WinInet.NativeMethods" -as [type])) {
 	}
 
 
-
-
-
-	
